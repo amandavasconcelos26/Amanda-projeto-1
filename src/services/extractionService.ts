@@ -21,7 +21,7 @@ export const autoMapColumns = async (columns: string[]) => {
     try {
       const engine = getProcessingClient();
       const response = await engine.models.generateContent({
-        model: "gemini-3.1-flash-lite-preview",
+        model: "gemini-3-flash-preview",
         contents: [
           { text: `Mapeie as colunas fornecidas para as chaves do sistema.
           Colunas disponíveis: ${columns.join(', ')}
@@ -45,7 +45,7 @@ export const autoMapColumns = async (columns: string[]) => {
       const isUnavailable = errorStr.includes("503") || errorStr.includes("UNAVAILABLE") || errorStr.includes("high demand");
 
       if (retries > 0 && (error.message?.includes("429") || error.message?.includes("quota") || isUnavailable)) {
-        const waitTime = (2 - retries) * 3000 + Math.random() * 3000;
+        const waitTime = (2 - retries) * 6000 + Math.random() * 4000;
         console.warn(`Mapeamento falhou (${isUnavailable ? 'Servidor Ocupado' : 'Limite'}), tentando novamente em ${Math.round(waitTime/1000)}s...`);
         retries--;
         await new Promise(r => setTimeout(r, waitTime));
@@ -127,7 +127,7 @@ export const parsePDFText = async (text: string) => {
     try {
       const engine = getProcessingClient();
       const response = await engine.models.generateContent({
-        model: "gemini-3.1-flash-lite-preview",
+        model: "gemini-3-flash-preview",
         contents: [
           { text: `Extraia os dados da tabela deste texto de relatório logístico:\n\n${text}` }
         ],
@@ -190,7 +190,7 @@ export const parsePDFText = async (text: string) => {
       const isUnavailable = errorStr.includes("503") || errorStr.includes("UNAVAILABLE") || errorStr.includes("high demand");
 
       if (retries > 0 && (error.message?.includes("429") || error.message?.includes("quota") || error.message?.includes("fetch") || isUnavailable)) {
-        const waitTime = (2 - retries) * 4000 + Math.random() * 4000;
+        const waitTime = (2 - retries) * 8000 + Math.random() * 5000;
         console.warn(`Extração falhou (${isUnavailable ? 'Servidor Ocupado' : 'Limite'}), tentando novamente em ${Math.round(waitTime/1000)}s... Restantes: ${retries}`);
         retries--;
         await new Promise(r => setTimeout(r, waitTime));
@@ -247,7 +247,7 @@ export const getAuditSupport = async (messages: any[], summary: any, simplifiedR
         * Resumo Executivo: Total de CTEs analisados: 3. Documentos faltantes: 1. Divergências de valor: 1. Valor em Risco: R$ 19.565,27. Margem Total (A): R$ 18.483,22.`;
 
       const response = await engine.models.generateContent({
-        model: 'gemini-3.1-flash-lite-preview',
+        model: 'gemini-3-flash-preview',
         contents: messages,
         config: {
           systemInstruction: systemInstruction,
@@ -260,7 +260,7 @@ export const getAuditSupport = async (messages: any[], summary: any, simplifiedR
       const isUnavailable = errorStr.includes("503") || errorStr.includes("UNAVAILABLE") || errorStr.includes("high demand");
 
       if (retries > 0 && (error.message?.includes("429") || error.message?.includes("quota") || isUnavailable)) {
-        const waitTime = (1 - retries) * 3000 + Math.random() * 3000;
+        const waitTime = (1 - retries) * 6000 + Math.random() * 4000;
         console.warn(`Suporte falhou (${isUnavailable ? 'Servidor Ocupado' : 'Limite'}), tentando novamente em ${Math.round(waitTime/1000)}s...`);
         retries--;
         await new Promise(r => setTimeout(r, waitTime));
