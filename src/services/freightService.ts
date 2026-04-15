@@ -90,9 +90,9 @@ export const parseFile = async (file: File): Promise<{ data: any[], footerTotal?
           const batchResults = await Promise.all(batch.map(chunk => parsePDFText(chunk)));
           chunksResults.push(...batchResults);
           
-          // Pausa maior entre chunks
+          // Pausa maior entre chunks para evitar 503/429
           if (allChunks.length > batchSize && i + batchSize < allChunks.length) {
-            await new Promise(r => setTimeout(r, 3000));
+            await new Promise(r => setTimeout(r, 6000));
           }
         }
         
